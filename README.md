@@ -1,4 +1,5 @@
 # Meeting Prep Agent
+DEPLOYED LINK: https://meetingprep-wpt7.onrender.com/login
 > *"From meeting conversations to accountable action."*
 
 An intelligent, context-aware meeting lifecycle agent that remembers previous meetings, synthesizes historical context to prepare users before upcoming meetings, extracts structured Minutes of Meeting (MOM), decisions, and action items from transcripts, and turns conversations into tracked individual tasks with a memory-grounded AI assistant.
