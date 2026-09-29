@@ -1,328 +1,120 @@
-Meeting Agent is an AI-powered meeting productivity platform that transforms meeting conversations into structured, actionable outcomes. Upload a meeting recording, generate an editable transcript, create AI-powered Minutes of Meeting (MOM), extract decisions and action items, assign tasks, and interact with an AI meeting assistant.
+# Meeting Prep Agent
+> *"From meeting conversations to accountable action."*
 
-✨ Features
-🎙️ Audio Transcription
+An intelligent, context-aware meeting lifecycle agent that remembers previous meetings, synthesizes historical context to prepare users before upcoming meetings, extracts structured Minutes of Meeting (MOM), decisions, and action items from transcripts, and turns conversations into tracked individual tasks with a memory-grounded AI assistant.
 
-Upload meeting recordings such as MP3, WAV, or M4A and automatically generate a transcript using AssemblyAI.
+---
 
-📝 Editable Meeting Transcript
+## 1. Core Product Vision & The Loop
 
-Review and edit the generated transcript before using it for AI analysis.
+Most meeting tools stop at audio transcription and surface-level summaries. **Meeting Prep Agent** solves the accountability gap with an ongoing memory loop:
 
-🤖 AI-Powered MOM
+```
+REMEMBER
+   ↓
+PREPARE (Historical context, decisions, pending commitments, suggested questions)
+   ↓
+MEET
+   ↓
+UNDERSTAND (Mistral AI analysis, structured MOM, consensus detection)
+   ↓
+ASSIGN (Ambiguity checks, confidence scores, organizer confirmation)
+   ↓
+TRACK (Individual persona dashboards, deadline notifications)
+   ↓
+REMEMBER AGAIN (Organizational memory queryable by chatbot)
+```
 
-Generate structured meeting outcomes using Mistral AI, including:
+---
 
-Meeting summary
-Discussion points
-Decisions
-Commitments
-Action items
-Unresolved issues
-Follow-ups
-✅ Task Management
+## 2. 8-Step Hackathon Demo Story
 
-Convert approved action items into individual tasks with:
+The app has built-in persona switching and seed data to run this exact live evaluation:
 
-Assignee
-Deadline
-Priority
-Status
-Meeting context
-💬 AI Meeting Chatbot
+1. **Step 1 - Team & Participants**: Default workspace **Project Alpha** with members **Maroof** (Lead), **Ayesha** (Designer), **Rahul** (API Specialist), and **Sarah** (QA).
+2. **Step 2 - Previous Meeting in Memory**: "Project Alpha Planning" where the team agreed on REST APIs, PostgreSQL, and commitments were made by Rahul (API testing), Ayesha (UI prototype), and Maroof (Deployment docs).
+3. **Step 3 - Upcoming Meeting & "Prepare Me"**: Open "Project Alpha Progress Review" and click **"Prepare Me"**. The agent retrieves historical records and generates the Executive Meeting Brief with previous decisions, pending commitments, overdue items, discussion topics, and suggested accountability questions.
+4. **Step 4 - Input Sample Transcript**: Paste the transcript:
+   > *"We discussed the API integration. Rahul confirmed that API testing will be completed by Monday. Ayesha will finish the dashboard prototype by Friday. The team decided to use REST APIs. Maroof will prepare deployment documentation by Wednesday."*
+5. **Step 5 - "Generate MOM"**: Click **"Generate MOM"**. Mistral AI structures the summary, discussion points, decisions, and action items with individual owners, deadlines, priorities, and confidence scores (e.g. 98%).
+6. **Step 6 - "Create Tasks"**: Review action items (confirm/edit/reject) and click **"Create All Tasks"**. The system creates persistent tasks and delivers notifications to Rahul, Ayesha, and Maroof.
+7. **Step 7 - Persona Dashboard Isolation**: Use the top demo switcher to switch between Maroof, Ayesha, Rahul, and Sarah. Each user only sees their own assigned deliverables on their personal dashboard and task board!
+8. **Step 8 - Context-Aware Chatbot Assistant**: Open the Assistant and ask:
+   - *"What did we decide about the API?"* → Answers with REST API decision from Project Alpha Planning.
+   - *"What are my pending tasks?"* → Retrieves the authenticated user's actual tasks.
+   - *"What did Rahul commit to?"* → Cites Rahul's API testing deliverable.
+   - *"What should I discuss in tomorrow's meeting?"* → Cross-references pending commitments with upcoming agenda.
 
-Ask questions about your meetings using Groq.
+---
 
-Example questions:
+## 3. Tech Stack
 
-What did we decide about the project?
+- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS v4, React Router 7, Lucide Icons, Motion.
+- **Backend**: Node.js, Express, TypeScript, RESTful API architecture.
+- **Data & Storage Layer**: Local JSON persistence in `data/database.json`; the Drizzle schema and Neon migration are not currently wired into the runtime store.
+- **AI Engine**: Server-side Groq for chatbot responses, Mistral for meeting preparation and MOM generation, and AssemblyAI for audio transcription.
+- **Security & Auth**: Cryptographically signed token sessions, user isolation, and backend-only AI credentials.
 
-What are my pending tasks?
+---
 
-Which commitments are overdue?
+## 4. Environment Variables
 
-What did Rahul commit to?
+Create `.env` using `.env.example`:
 
-What changed since our previous meeting?
+```env
+# Required: use a unique random secret of at least 32 characters
+JWT_SECRET="replace-with-a-random-secret-at-least-32-characters"
 
-What should we discuss in the next meeting?
+# Optional: Set Mistral AI API key for Mistral models
+MISTRAL_API_KEY="your-mistral-api-key"
+MISTRAL_MODEL="mistral-small-latest"
 
-The chatbot uses authorized meeting context rather than functioning as a generic chatbot.
+# Server-side chatbot provider
+GROQ_API_KEY="your-groq-api-key"
+GROQ_MODEL="llama-3.3-70b-versatile"
 
-🧠 Meeting Memory
+# Optional: Enable demo login/persona switching only for local development
+DEMO_AUTH_ENABLED="true"
+VITE_DEMO_AUTH_ENABLED="true"
 
-Meeting Agent maintains useful context across meetings, helping teams keep track of:
+# Optional: AssemblyAI transcription
+ASSEMBLYAI_API_KEY="your-assemblyai-api-key"
 
-Previous decisions
-Commitments
-Open issues
-Follow-ups
-Important discussion points
-📋 Meeting Preparation
+# Server Port
+PORT=3000
 
-Prepare for upcoming meetings using information from previous meetings, pending tasks, commitments, and unresolved issues.
+# App URL
+APP_URL="http://localhost:3000"
+```
 
-🔐 Authentication & Authorization
+---
 
-Firebase Authentication provides user authentication, while protected backend APIs control access to application data.
+## 5. Running the Application
 
-🗄️ Persistent Storage
-
-Meeting data, transcripts, tasks, decisions, commitments, and related information are stored using Neon PostgreSQL.
-
-🏗️ Architecture
-                    ┌──────────────────┐
-                    │   React Frontend │
-                    └────────┬─────────┘
-                             │
-                             ▼
-                    ┌──────────────────┐
-                    │   Node / Express │
-                    │      Backend     │
-                    └────────┬─────────┘
-                             │
-             ┌───────────────┼────────────────┐
-             │               │                │
-             ▼               ▼                ▼
-      ┌────────────┐  ┌────────────┐  ┌────────────┐
-      │   Firebase │  │    Neon    │  │  AI APIs   │
-      │    Auth    │  │ PostgreSQL │  │            │
-      └────────────┘  └────────────┘  └─────┬──────┘
-                                             │
-                          ┌──────────────────┼─────────────────┐
-                          ▼                  ▼                 ▼
-                    ┌───────────┐      ┌───────────┐    ┌───────────┐
-                    │ AssemblyAI│      │  Mistral  │    │   Groq    │
-                    │Transcript │      │ MOM / AI  │    │ Chatbot   │
-                    └───────────┘      └───────────┘    └───────────┘
-🔄 Core Workflow
-Create Meeting
-      │
-      ▼
-Upload Audio
-      │
-      ▼
-AssemblyAI Transcription
-      │
-      ▼
-Editable Transcript
-      │
-      ▼
-Generate MOM & Actions
-      │
-      ▼
-Mistral AI
-      │
-      ├── Summary
-      ├── Decisions
-      ├── Commitments
-      ├── Action Items
-      └── Issues
-             │
-             ▼
-       Review & Approve
-             │
-             ▼
-        Create Tasks
-             │
-             ▼
-       Track Progress
-             │
-             ▼
-     Meeting Memory
-             │
-             ▼
-      Groq AI Assistant
-🛠️ Tech Stack
-Layer	Technology
-Frontend	React + TypeScript
-Backend	Node.js + Express
-Database	Neon PostgreSQL
-ORM	Drizzle ORM
-Authentication	Firebase
-Transcription	AssemblyAI
-Meeting AI	Mistral AI
-Chatbot	Groq
-API	REST
-Configuration	Environment Variables
-🚀 Getting Started
-1. Clone the repository
-git clone <your-repository-url>
-cd meeting-agent
-2. Install dependencies
+```bash
+# Install dependencies
 npm install
-3. Configure environment variables
 
-Create a .env file:
-
-DATABASE_URL=""
-
-MISTRAL_API_KEY=""
-MISTRAL_MODEL=""
-
-GROQ_API_KEY=""
-GROQ_MODEL=""
-
-ASSEMBLYAI_API_KEY=""
-
-FIREBASE_PROJECT_ID=""
-FIREBASE_CLIENT_EMAIL=""
-FIREBASE_PRIVATE_KEY=""
-
-VITE_FIREBASE_API_KEY=""
-VITE_FIREBASE_AUTH_DOMAIN=""
-VITE_FIREBASE_PROJECT_ID=""
-VITE_FIREBASE_STORAGE_BUCKET=""
-VITE_FIREBASE_MESSAGING_SENDER_ID=""
-VITE_FIREBASE_APP_ID=""
-
-Never commit .env to Git.
-
-Use .env.example for sharing the required configuration structure.
-
-🗃️ Database Setup
-
-Make sure your Neon PostgreSQL database is available and configure:
-
-DATABASE_URL="your-neon-database-url"
-
-Run the project's database migration commands as defined in package.json.
-
-For example, if the project uses Drizzle Kit:
-
-npm run db:migrate
-
-Use the actual database scripts provided by the project.
-
-🔥 Firebase Setup
-
-Create a Firebase project and enable the authentication provider required by the application.
-
-Configure the Firebase client variables:
-
-VITE_FIREBASE_API_KEY=""
-VITE_FIREBASE_AUTH_DOMAIN=""
-VITE_FIREBASE_PROJECT_ID=""
-VITE_FIREBASE_STORAGE_BUCKET=""
-VITE_FIREBASE_MESSAGING_SENDER_ID=""
-VITE_FIREBASE_APP_ID=""
-
-For backend authentication verification:
-
-FIREBASE_PROJECT_ID=""
-FIREBASE_CLIENT_EMAIL=""
-FIREBASE_PRIVATE_KEY=""
-
-Firebase Admin credentials must remain server-side.
-
-🤖 AI Services
-Mistral
-
-Mistral handles meeting intelligence such as:
-
-Transcript
-    ↓
-Mistral
-    ↓
-MOM
-Decisions
-Commitments
-Action Items
-Issues
-Groq
-
-Groq powers the interactive meeting chatbot:
-
-User Question
-      ↓
-Authorized Meeting Context
-      ↓
-Groq
-      ↓
-AI Response
-AssemblyAI
-
-AssemblyAI converts meeting recordings into text:
-
-Audio
-  ↓
-AssemblyAI
-  ↓
-Transcript
-  ↓
-Editable Meeting Notes
-▶️ Running the Application
-
-Start the development server:
-
+# Start development full-stack server (runs on port 3000)
 npm run dev
 
-Then open the local URL displayed by the development server.
-
-🧪 Validation
-
-Run the available project checks:
-
-npm run typecheck
-npm run lint
-npm test
+# Build for production
 npm run build
+npm start
+```
 
-The exact commands depend on the scripts configured in package.json.
+---
 
-🔒 Security
+## 6. API Overview
 
-Meeting Agent is designed with several security principles:
-
-API keys remain on the backend.
-Firebase handles authentication.
-Backend APIs verify authenticated users.
-Database records are associated with users/teams.
-Frontend code does not directly call Mistral, Groq, or AssemblyAI with secret keys.
-.env should never be committed.
-User-provided IDs should not be trusted as proof of ownership.
-AI-generated information should be validated before becoming application data.
-
-If an API key has previously been exposed, revoke and regenerate it.
-
-📁 Project Structure
-
-A typical structure is:
-
-meeting-agent/
-│
-├── client/
-│   ├── components/
-│   ├── pages/
-│   ├── hooks/
-│   ├── services/
-│   └── ...
-│
-├── server/
-│   ├── routes/
-│   ├── services/
-│   │   ├── mistralService.ts
-│   │   ├── groqService.ts
-│   │   └── transcriptionService.ts
-│   ├── middleware/
-│   ├── db/
-│   └── ...
-│
-├── shared/
-│
-├── migrations/
-│
-├── .env.example
-├── .gitignore
-├── package.json
-└── README.md
-
-The exact structure may vary depending on the implementation.
-
-🎯 Project Goals
-
-Meeting Agent focuses on closing the gap between:
-
-What was discussed → What was decided → Who needs to act → What happened afterward
-
-Instead of treating meetings as isolated conversations, the platform turns them into persistent, searchable, and actionable knowledge.
+| Method | Endpoint | Description |
+|---|---|---|
+| `POST` | `/api/auth/login` | Email/password or quick demo login |
+| `POST` | `/api/auth/switch-user` | Fast persona switcher for demo evaluation |
+| `GET` | `/api/meetings` | List meetings with participant resolution |
+| `POST` | `/api/meetings/:id/prepare` | **Meeting Preparation Agent**: generates executive brief |
+| `POST` | `/api/meetings/:id/generate-mom` | **MOM Agent**: parses transcript into structured MOM & actions |
+| `POST` | `/api/meetings/:id/create-tasks` | Converts confirmed action items into individual tasks |
+| `GET` | `/api/tasks/my` | Retrieves tasks assigned specifically to current persona |
+| `POST` | `/api/chat` | Context-grounded assistant with memory citation sources |
+| `POST` | `/api/demo/reset` | Resets database to original demo state |

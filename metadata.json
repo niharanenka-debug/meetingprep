@@ -1,0 +1,6 @@
+{
+  "name": "Meeting Prep Agent",
+  "description": "Intelligent meeting management agent that remembers past meetings, generates briefs, creates structured MOMs, and converts conversations into accountable action.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_MISTRAL_API"]
+}
